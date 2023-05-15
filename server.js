@@ -9,7 +9,7 @@ app.get("/", (req, res) => {
 });
 
 // Mongodb connection
-const connectDB = require("./config/db");
+const connectDB = require("./config/db")
 connectDB();
 
 app.use("/api", apiRoutes);
@@ -18,6 +18,13 @@ app.use((error, req, res, next) => {
   console.error(error);
   next(error);
 });
+
+app.use((error, req, res, next) => {
+  res.status(500).json({
+      message: error.message,
+      stack: error.stack
+  })
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
