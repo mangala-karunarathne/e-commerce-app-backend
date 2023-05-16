@@ -4,9 +4,22 @@ const port = 5000;
 
 const apiRoutes = require("./routes/apiRoutes");
 
-app.get("/", (req, res) => {
-  res.json({ message: "API running..." });
+app.get("/", async(req, res, next) => {
+  const Product = require("./models/ProductModel")
+  try {
+    const product = new Product
+    product.name = "New Product Name 2"
+    const productSaved = await product.save()
+    console.log(productSaved === product);
+    const products = await Product.find()
+    console.log(products.length);
+    res.send("Product Created " + product._id)
+  } catch (error) {
+    next(error)
+  }
+  // res.json({ message: "API running..." });
 });
+
 
 // Mongodb connection
 const connectDB = require("./config/db")
