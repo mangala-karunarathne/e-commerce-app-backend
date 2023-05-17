@@ -51,7 +51,9 @@ const productSchema = mongoose.Schema({
 },{
   timestamps: true,
 });
-productSchema.index()
 const Product = mongoose.model("Product", productSchema)
+productSchema.index({name:"text", description:"text"},{name:"TextIndex"})
+productSchema.index({"attrs.key":1, "attrs.value":1}),
+// productSchema.index({name:-1}),   // For Descending order of sorting in DB when searching
 
 module.exports = Product
