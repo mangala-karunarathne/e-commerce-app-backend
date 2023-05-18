@@ -21,13 +21,34 @@ const orderSchema = mongoose.Schema(
         quantity: { type: Number, required: true },
         count: { type: Number, required: true },
       }
-    ]
+    ],
+    transactionResult:{
+      status: {type: String},
+      createTime: {type: String},
+      amount: {type: Number},
+    },
+    isPaid:{
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    paidAt:{
+      type: Date,
+    },
+    isDelivered:{
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    deliveredAt:{
+      type: Date,
+    }
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.model("User", orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
-module.exports = User;
+module.exports = Order;
