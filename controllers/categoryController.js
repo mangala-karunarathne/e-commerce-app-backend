@@ -36,11 +36,15 @@ const deleteCategory = async (req, res, next) => {
   // return res.send(req.params.category)
   try {
     if (req.params.category !== "Choose Category") {
-      const categoryExists = await Category.findOne({
+      const categoryExists = await Category.findOneAndDelete({
         name: decodeURIComponent(req.params.category),
       }).orFail();
-      await categoryExists.remove();
-      res.json({ categoryDeleted: true });
+      console.log("Category", categoryExists);
+      if (categoryExists) {
+        res.json({ categoryDeleted: true, message: 'Category successfully deleted' });
+      } else {
+        res.json({ categoryDeleted: false, message: 'Category not found or already deleted' });
+      }
     }
   } catch (error) {
     next(error);
