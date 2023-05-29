@@ -51,4 +51,12 @@ const deleteCategory = async (req, res, next) => {
   }
 };
 
-module.exports = { getCategories, newCategory, deleteCategory };
+const saveAtr = async(req, res, next) => {
+  const {key, val, categoryChoose} = req.body
+
+  if(!key || !val || !categoryChoose){
+    return res.status(400).send("All inputs are required")
+  }
+}
+
+module.exports = { getCategories, newCategory, deleteCategory, saveAtr};
