@@ -22,9 +22,22 @@ const getProducts = async (req, res, next) => {
       ratingQueryCondition = { rating: { $in: ratingArray } };
     }
 
+    let categoryQueryCondition = {};
+    const categoryName = req.params.categoryName;
+    if (categoryName) {
+      queryCondition = true;
+      let a = categoryName.replaceAll(",", "/");
+      var regEx = new RegExp("^" + a);
+      categoryQueryCondition = { category: regEx };
+    }
+
     if (queryCondition) {
       query = {
-        $and: [priceQueryCondition, ratingQueryCondition],
+        $and: [
+          priceQueryCondition,
+          ratingQueryCondition,
+          categoryQueryCondition,
+        ],
       };
     }
 
