@@ -48,8 +48,18 @@ const getProducts = async (req, res, next) => {
       // attrs=RAM-1TB-2TB-4TB,color-blue-red
       // ['RAM-1TB-2TB-4TB','color-blue-red']
       attrsQueryCondition = req.query.attrs.split(",").reduce((acc, item)=> {
-        
-      })
+        if(item){
+          let a = item.split("-")
+          let values = [...a]
+          values.shift()
+          let a1 = {
+            attrs: { $elemMatch: {key:a[0], value:{$in: values}}}
+          }
+          acc.push(a1)
+          console.log(acc, {depth: null});
+          return acc
+        }else return acc
+      }, [])
     }
 
     if (queryCondition) {
