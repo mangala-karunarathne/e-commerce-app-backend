@@ -54,13 +54,30 @@ const getProducts = async (req, res, next) => {
       queryCondition = true;
     }
 
+
+    //pagination
+    const pageNum = Number(req.query.pageNum) || 1;
+
+    // sort by name, price etc.
+    let sort = {};
+    const sortOption = req.query.sort || "";
+    if (sortOption) {
+      let sortOpt = sortOption.split("_");
+      sort = { [sortOpt[0]]: Number(sortOpt[1]) };
+    }
+
     const searchQuery = req.params.searchQuery || "";
 
     let searchQueryCondiition = {};
+    let select = {};
 
     if (searchQuery) {
       queryCondition = true;
-      searchQueryCondiition = { $text: {$search: '"'+searchQuery+'"'}}
+      searchQueryCondiition = { $text: { $search: searchQuery } };
+      select={
+        score:{$meta:"textScore"}
+      }
+      sort = { score: {$meta: "textScore"}}
     }
 
     if (queryCondition) {
@@ -75,19 +92,9 @@ const getProducts = async (req, res, next) => {
       };
     }
 
-    //pagination
-    const pageNum = Number(req.query.pageNum) || 1;
-
-    // sort by name, price etc.
-    let sort = {};
-    const sortOption = req.query.sort || "";
-    if (sortOption) {
-      let sortOpt = sortOption.split("_");
-      sort = { [sortOpt[0]]: Number(sortOpt[1]) };
-    }
-
     const totalProducts = await Product.countDocuments(query);
     const products = await Product.find(query)
+      .select(select)
       .skip(recordsPerPage * (pageNum - 1))
       .sort(sort)
       .limit(recordsPerPage);
