@@ -50,8 +50,17 @@ const getProducts = async (req, res, next) => {
           return acc;
         } else return acc;
       }, []);
-    //   console.dir(attrsQueryCondition, { depth: null });
-    queryCondition = true;
+      //   console.dir(attrsQueryCondition, { depth: null });
+      queryCondition = true;
+    }
+
+    const searchQuery = req.params.searchQuery || "";
+
+    let searchQueryCondiition = {};
+
+    if (searchQuery) {
+      queryCondition = true;
+      searchQueryCondiition = { $text: {$search: '"'+searchQuery+'"'}}
     }
 
     if (queryCondition) {
@@ -60,7 +69,8 @@ const getProducts = async (req, res, next) => {
           priceQueryCondition,
           ratingQueryCondition,
           categoryQueryCondition,
-          ...attrsQueryCondition
+          searchQueryCondiition,
+          ...attrsQueryCondition,
         ],
       };
     }
@@ -92,4 +102,3 @@ const getProducts = async (req, res, next) => {
   }
 };
 module.exports = getProducts;
-
