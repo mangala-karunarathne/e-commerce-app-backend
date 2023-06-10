@@ -148,9 +148,22 @@ const adminGetProduct = async (req, res, next) => {
   }
 };
 
+const adminDeleteProduct = async(req, res, next) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json({ message: "Product removed" });
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   getProducts,
   getProductById,
   getBestSellers,
   adminGetProduct,
+  adminDeleteProduct,
 };
