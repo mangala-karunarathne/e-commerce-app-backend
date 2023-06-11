@@ -165,25 +165,53 @@ const adminCreateProduct = async (req, res, next) => {
     const product = new Product();
     const { name, description, category, count, price, attributesTable } =
       req.body;
-    product.name = name;
-    product.description = description;
-    product.category = category;
-    product.count = count;
-    product.price = price;
-    if (attributesTable.length > 0) {
-      attributesTable.map((item) => {
-        product.attrs.push(item);
-      });
+      product.name = name;
+      product.description = description;
+      product.category = category;
+      product.count = count;
+      product.price = price;
+      if (attributesTable.length > 0) {
+        attributesTable.map((item) => {
+          product.attrs.push(item);
+        });
+      }
+      await product.save();
+      res.json({
+        message: "Product Created",
+        productId: product._id,
+      })
+    } catch (error) {
+      next(error);
     }
-    await product.save();
-    res.json({
-      message: "Product Created",
-      productId: product._id,
-    })
+  };
+  
+  const adminUpdateProduct = async(req, res, next) => {
+    try {
+      const product = await Product.findById(req.params.id).orFail()
+      const { name, description, category, count, price, attributesTable } =
+        req.body;
+    
+        product.name = name || product.name ;
+          product.description = description || product.description;
+          product.category = category || product.category;
+          product.count = count || product.count;
+          product.price = price || product.price;
+          if (attributesTable.length > 0) {
+            product.attrs = []
+            attributesTable.map((item) => {
+              product.attrs.push(item);
+            });
+          }else{
+            product.attrs = []
+          }
+          await product.save()
+          res.json({
+            message: "Product Updated"
+          })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
 module.exports = {
   getProducts,
@@ -192,4 +220,5 @@ module.exports = {
   adminGetProduct,
   adminDeleteProduct,
   adminCreateProduct,
+  adminUpdateProduct,
 };
