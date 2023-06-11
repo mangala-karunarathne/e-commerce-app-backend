@@ -142,13 +142,13 @@ const adminGetProduct = async (req, res, next) => {
     const products = await Product.find({})
       .sort({ category: 1 })
       .select("name price category");
-      return res.json(products)
+    return res.json(products);
   } catch (error) {
     next(error);
   }
 };
 
-const adminDeleteProduct = async(req, res, next) => {
+const adminDeleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
@@ -156,9 +156,34 @@ const adminDeleteProduct = async(req, res, next) => {
     }
     res.json({ message: "Product removed" });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
+const adminCreateProduct = async (req, res, next) => {
+  try {
+    const product = new Product();
+    const { name, description, category, count, price, attributesTable } =
+      req.body;
+    product.name = name;
+    product.description = description;
+    product.category = category;
+    product.count = count;
+    product.price = price;
+    if (attributesTable.length > 0) {
+      attributesTable.map((item) => {
+        product.attrs.push(item);
+      });
+    }
+    await product.save();
+    res.json({
+      message: "Product Created",
+      productId: product._id,
+    })
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getProducts,
@@ -166,4 +191,5 @@ module.exports = {
   getBestSellers,
   adminGetProduct,
   adminDeleteProduct,
+  adminCreateProduct,
 };
