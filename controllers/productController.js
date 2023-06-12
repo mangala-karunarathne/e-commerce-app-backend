@@ -1,5 +1,6 @@
 const Product = require("../models/ProductModel");
 const recordsPerPage = require("../config/pagination");
+const imageValidate = require("../utils/imageValidate");
 
 const getProducts = async (req, res, next) => {
   try {
@@ -165,68 +166,73 @@ const adminCreateProduct = async (req, res, next) => {
     const product = new Product();
     const { name, description, category, count, price, attributesTable } =
       req.body;
-      product.name = name;
-      product.description = description;
-      product.category = category;
-      product.count = count;
-      product.price = price;
-      if (attributesTable.length > 0) {
-        attributesTable.map((item) => {
-          product.attrs.push(item);
-        });
-      }
-      await product.save();
-      res.json({
-        message: "Product Created",
-        productId: product._id,
-      })
-    } catch (error) {
-      next(error);
+    product.name = name;
+    product.description = description;
+    product.category = category;
+    product.count = count;
+    product.price = price;
+    if (attributesTable.length > 0) {
+      attributesTable.map((item) => {
+        product.attrs.push(item);
+      });
     }
-  };
-  
-  const adminUpdateProduct = async(req, res, next) => {
-    try {
-      const product = await Product.findById(req.params.id).orFail()
-      const { name, description, category, count, price, attributesTable } =
-        req.body;
-    
-        product.name = name || product.name ;
-          product.description = description || product.description;
-          product.category = category || product.category;
-          product.count = count || product.count;
-          product.price = price || product.price;
-          if (attributesTable.length > 0) {
-            product.attrs = []
-            attributesTable.map((item) => {
-              product.attrs.push(item);
-            });
-          }else{
-            product.attrs = []
-          }
-          await product.save()
-          res.json({
-            message: "Product Updated"
-          })
+    await product.save();
+    res.json({
+      message: "Product Created",
+      productId: product._id,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-const adminUpload = async(req, res, next) => {
+const adminUpdateProduct = async (req, res, next) => {
   try {
-    if(!req.files || !!req.files.images === false ){
-      return res.status(400).send("No files were uploaded.")
+    const product = await Product.findById(req.params.id).orFail();
+    const { name, description, category, count, price, attributesTable } =
+      req.body;
+
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.category = category || product.category;
+    product.count = count || product.count;
+    product.price = price || product.price;
+    if (attributesTable.length > 0) {
+      product.attrs = [];
+      attributesTable.map((item) => {
+        product.attrs.push(item);
+      });
+    } else {
+      product.attrs = [];
     }
-    if(Array.isArray(req.files.images)){
-      res.send("You sent " + req.files.images.length + " images")
-    }else{
-      res.send("You sent only one image")
+    await product.save();
+    res.json({
+      message: "Product Updated",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const adminUpload = async (req, res, next) => {
+  try {
+    if (!req.files || !!req.files.images === false) {
+      return res.status(400).send("No files were uploaded.");
+    }
+
+    const validateResult = imageValidate(req.files.images);
+    if (validateResult.error) {
+      return res.status(400).send(validateResult.error);
+    }
+    if (Array.isArray(req.files.images)) {
+      res.send("You sent " + req.files.images.length + " images");
+    } else {
+      res.send("You sent only one image");
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 module.exports = {
   getProducts,
