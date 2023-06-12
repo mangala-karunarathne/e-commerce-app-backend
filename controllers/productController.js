@@ -224,11 +224,21 @@ const adminUpload = async (req, res, next) => {
     if (validateResult.error) {
       return res.status(400).send(validateResult.error);
     }
+
+    const path = require("path");
+    const { v4: uuidv4 } = require('uuid');
+    let imagesTable = [];
     if (Array.isArray(req.files.images)) {
-      res.send("You sent " + req.files.images.length + " images");
+      imagesTable = images
     } else {
-      res.send("You sent only one image");
+      imagesTable.push(req.files.images)
     }
+
+    for(image of imagesTable){
+      console.log(path.extname(image.name));
+      console.log(uuidv4());
+    }
+
   } catch (error) {
     next(error);
   }
