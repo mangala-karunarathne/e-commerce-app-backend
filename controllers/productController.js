@@ -234,6 +234,11 @@ const adminUpload = async (req, res, next) => {
       "images",
       "products"
     );
+
+    // console.log(req.query.productId);
+
+    let product = await Product.findById(req.query.productId).orFail();
+
     let imagesTable = [];
     if (Array.isArray(req.files.images)) {
       imagesTable = req.files.images;
@@ -241,18 +246,20 @@ const adminUpload = async (req, res, next) => {
       imagesTable.push(req.files.images);
     }
 
-    for (images of imagesTable) {
+    for (let image of imagesTable) {
       // console.log(path.extname(image.name));
       // console.log(uuidv4());
-      var uploadPath =
-        uploadDirectory + "/" + uuidv4() + path.extname(images.name);
-      images.mv(uploadPath, function (err) {
+      var fileName = uuidv4() + path.extname(image.name);
+      var uploadPath = uploadDirectory + "/" + fileName;
+      product.images.push({ path: "/images/products/" + fileName });
+      // /F:/git/e-commerce-app-frontend/public/ + path will appear in browser
+      image.mv(uploadPath, function (err) {
         if (err) {
           return res.status(500).send(err);
         }
       });
     }
-
+    await product.save();
     return res.send("File uploaded!");
   } catch (error) {
     next(error);
