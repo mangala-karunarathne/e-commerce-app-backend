@@ -267,11 +267,27 @@ const adminUpload = async (req, res, next) => {
 };
 
 const adminDeleteProductImage = async (req, res, next) => {
-  const imagePath = decodeURIComponent(req.params.imagePath);
-  const path = require("path");
-  const finalPath = path.resolve("../e-commerce-app-frontend/public") + imagePath;
-  console.log(finalPath);
-  return res.end();
+  try {
+    const imagePath = decodeURIComponent(req.params.imagePath);
+    const path = require("path");
+    const finalPath =
+      path.resolve("../e-commerce-app-frontend/public") + imagePath;
+    // console.log(finalPath);
+
+    const fs = require("fs");
+    fs.unlink(finalPath, (err) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+    });
+    await Product.findOneAndUpdate(
+      { _id: req.params.productId },
+      { $pull: { images: { path: imagePath } } }
+    ).orFail();
+    return res.end();
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
