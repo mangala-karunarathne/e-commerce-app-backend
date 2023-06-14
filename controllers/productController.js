@@ -269,7 +269,7 @@ const adminUpload = async (req, res, next) => {
 const adminDeleteProductImage = async (req, res, next) => {
   const imagePath = decodeURIComponent(req.params.imagePath);
   const path = require("path");
-  const finalPath = path.resolve("../frontend/public") + imagePath;
+  const finalPath = path.resolve("../e-commerce-app-frontend/public") + imagePath;
   console.log(finalPath);
   return res.end();
 };
