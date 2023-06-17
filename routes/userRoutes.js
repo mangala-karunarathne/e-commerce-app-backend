@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express();
-const { getUsers, registerUser } = require("../controllers/userController.js");
+const { getUsers, registerUser, loginUser } = require("../controllers/userController.js");
 
-router.get("/", getUsers);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
 // user logged in routes:
 
 // admin routes:
-router.post("/register", registerUser);
+router.get("/", getUsers);
 
 module.exports = router;
