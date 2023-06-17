@@ -19,15 +19,30 @@ const registerUser = async (req, res, next) => {
     const hashedPassword = hashPassword(password);
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).send("User already exists");
     } else {
       const user = await User.create({
         name,
         lastName,
         email: email.toLowerCase(),
-        password: hashPassword,
+        password: hashedPassword,
       });
-      res.status(201).send(user);
+      res
+      .cookie("access_token", "fake access token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+      })
+      .status(201).json({
+        success: "User Created",
+        userCreated: {
+          _id: user._id,
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email,
+          isAdmin: user.isAdmin,
+        },
+      });
     }
   } catch (error) {
     next(error);
