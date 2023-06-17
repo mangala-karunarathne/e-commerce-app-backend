@@ -1,6 +1,6 @@
 const User = require("../models/UserModel");
 const generateAuthToken = require("../utils/generateAuthToken");
-const { hashPassword } = require("../utils/hashPassword");
+const { hashPassword, comparePasswords } = require("../utils/hashPassword");
 
 const getUsers = async (req, res, next) => {
   try {
@@ -70,7 +70,7 @@ const loginUser = async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
-    if (user) {
+    if (user && comparePasswords(password, user.password)) {
       let cookieParams = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
