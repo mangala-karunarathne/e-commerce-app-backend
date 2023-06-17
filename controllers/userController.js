@@ -19,7 +19,7 @@ const registerUser = async (req, res, next) => {
     const hashedPassword = hashPassword(password);
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).send("User already exists");
     } else {
       const user = await User.create({
         name,
@@ -27,7 +27,13 @@ const registerUser = async (req, res, next) => {
         email: email.toLowerCase(),
         password: hashedPassword,
       });
-      res.status(201).send(user);
+      res.status(201).json({success: "User Created", userCreated: {
+        _id: user._id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      }});
     }
   } catch (error) {
     next(error);
