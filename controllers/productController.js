@@ -140,6 +140,7 @@ const getBestSellers = async (req, res, next) => {
 
 const adminGetProduct = async (req, res, next) => {
   try {
+    // console.log(req.user);
     const products = await Product.find({})
       .sort({ category: 1 })
       .select("name price category");
