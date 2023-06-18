@@ -20,4 +20,12 @@ try {
   }
 };
 
-module.exports = { verifyIsLoggedIn };
+const verifyIsAdmin = (req, res, next) => {
+    if(req.user && req.user.isAdmin){
+        next()
+    }else{
+        return res.status(401).send("Unautherized. Admin required")
+    }
+}
+
+module.exports = { verifyIsLoggedIn, verifyIsAdmin };
