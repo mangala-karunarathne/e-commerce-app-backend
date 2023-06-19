@@ -1,3 +1,4 @@
+const Review = require("../models/ReviewModel");
 const User = require("../models/UserModel");
 const generateAuthToken = require("../utils/generateAuthToken");
 const { hashPassword, comparePasswords } = require("../utils/hashPassword");
@@ -135,20 +136,54 @@ const updateUserProfile = async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         isAdmin: user.isAdmin,
-      }
-    })
+      },
+    });
   } catch (error) {
     next(error);
   }
 };
 
-const getUserProfile = async(req, res, next) => {
+const getUserProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id).orFail();
-    return res.send(user)
+    return res.send(user);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-module.exports = { getUsers, registerUser, loginUser, updateUserProfile, getUserProfile };
+const writeReview = async (req, res, next) => {
+  try {
+    const { comment, rating } = req.body;
+    if (!(comment && rating)) {
+      return res.status(400).send("All inputs are required");
+    }
+
+    const ObjectId = require("mongodb").ObjectId;
+    let reviewId = new ObjectId();
+
+    await Review.create([
+      {
+        _id: reviewId,
+        comment: comment,
+        rating: Number(rating),
+        user: {
+          _id: req.user._id,
+          name: req.user.name + " " + req.user.lastName,
+        },
+      },
+    ]);
+    res.send("Review Created")
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getUsers,
+  registerUser,
+  loginUser,
+  updateUserProfile,
+  getUserProfile,
+  writeReview,
+};
