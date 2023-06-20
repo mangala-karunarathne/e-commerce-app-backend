@@ -1,3 +1,4 @@
+const Product = require("../models/ProductModel");
 const Review = require("../models/ReviewModel");
 const User = require("../models/UserModel");
 const generateAuthToken = require("../utils/generateAuthToken");
@@ -173,7 +174,21 @@ const writeReview = async (req, res, next) => {
         },
       },
     ]);
-    res.send("Review Created")
+
+    const product = await Product.findById(req.params.productId).populate(
+      "reviews"
+    );
+    // res.send(product);
+    let prc = [...product.reviews];
+    prc.push({rating: rating})
+    product.reviews.push(reviewId)
+    if (product.reviews.length === 1) {
+      product.rating = Number(rating);
+      product.reviewsNumber = 1;
+    } else {
+      product.reviewsNumber = product.reviews.length;
+    }
+    res.send("Review Created");
   } catch (error) {
     next(error);
   }
