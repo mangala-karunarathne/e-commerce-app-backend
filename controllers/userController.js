@@ -178,7 +178,15 @@ const writeReview = async (req, res, next) => {
     const product = await Product.findById(req.params.productId).populate(
       "reviews"
     );
-    // res.send(product);
+
+    const alreadyReviewed = product.reviews.find(
+      (r) => r.user._id.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+      return res.status(400).send("product already reviewed");
+    }
+
     let prc = [...product.reviews];
     prc.push({ rating: rating });
     product.reviews.push(reviewId);
