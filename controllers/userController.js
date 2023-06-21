@@ -180,14 +180,19 @@ const writeReview = async (req, res, next) => {
     );
     // res.send(product);
     let prc = [...product.reviews];
-    prc.push({rating: rating})
-    product.reviews.push(reviewId)
+    prc.push({ rating: rating });
+    product.reviews.push(reviewId);
     if (product.reviews.length === 1) {
       product.rating = Number(rating);
       product.reviewsNumber = 1;
     } else {
       product.reviewsNumber = product.reviews.length;
+      product.rating =
+        prc
+          .map((item) => Number(item.rating))
+          .reduce((sum, item) => sum + item) / product.reviews.length;
     }
+    await product.save();
     res.send("Review Created");
   } catch (error) {
     next(error);
