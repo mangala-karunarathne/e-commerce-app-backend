@@ -220,6 +220,14 @@ const writeReview = async (req, res, next) => {
   }
 };
 
+const getUser = async(req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).orFail();
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   getUsers,
   registerUser,
