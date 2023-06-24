@@ -220,14 +220,33 @@ const writeReview = async (req, res, next) => {
   }
 };
 
-const getUser = async(req, res, next) => {
+const getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).select("name lastName email isAdmin").orFail();
-    return res.send(user)
+    const user = await User.findById(req.params.id)
+      .select("name lastName email isAdmin")
+      .orFail();
+    return res.send(user);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
+const updateUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).orFail();
+    user.name = req.body.name || user.name;
+    user.lastName = req.body.lastName || user.lastName;
+    user.email = req.body.email || user.email;
+    user.isAdmin = req.body.isAdmin || user.isAdmin;
+
+    await user.save();
+
+res.send("User Updated")
+
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getUsers,
@@ -237,4 +256,5 @@ module.exports = {
   getUserProfile,
   writeReview,
   getUser,
+  updateUser,
 };
