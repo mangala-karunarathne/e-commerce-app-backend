@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express();
-const { getUsers, registerUser, loginUser, updateUserProfile, getUserProfile, writeReview, getUser, updateUser } = require("../controllers/userController.js");
+const { getUsers, registerUser, loginUser, updateUserProfile, getUserProfile, writeReview, getUser, updateUser, deleteUser } = require("../controllers/userController.js");
 const { verifyIsLoggedIn, verifyIsAdmin } = require("../middleware/verifyAuthToken.js");
 
 router.post("/register", registerUser);
@@ -17,5 +17,6 @@ router.use(verifyIsAdmin)
 router.get("/", getUsers);
 router.get("/:id", getUser);
 router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 module.exports = router;
