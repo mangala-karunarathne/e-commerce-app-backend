@@ -241,8 +241,16 @@ const updateUser = async (req, res, next) => {
 
     await user.save();
 
-res.send("User Updated")
+    res.send("User Updated");
+  } catch (error) {
+    next(error);
+  }
+};
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id).orFail();
+    res.send("User Removed")
   } catch (error) {
     next(error);
   }
@@ -257,4 +265,5 @@ module.exports = {
   writeReview,
   getUser,
   updateUser,
+  deleteUser
 };
