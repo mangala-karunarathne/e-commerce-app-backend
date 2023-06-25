@@ -11,4 +11,15 @@ const getUserOrders = async (req, res, next) => {
   }
 };
 
-module.exports = getUserOrders;
+const getOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate("user", "-password -isAdmin -id -__v -createdAt -updateAt")
+      .orFail();
+    res.send(order);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUserOrders, getOrder };
