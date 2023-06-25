@@ -1,8 +1,14 @@
-const Product = require("../models/OrderModel")
+const Order = require("../models/OrderModel");
+const Product = require("../models/OrderModel");
+const ObjectId = require("mongodb").ObjectId;
 
-const getOrders = (req, res) => {
-   
-    res.send(" Handling Order Routes")
-}  
+const getUserOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({ user: new ObjectId(req.user._id) });
+    res.send(orders);
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = getOrders
+module.exports = getUserOrders;
