@@ -95,11 +95,31 @@ const getOrders = async (req, res, next) => {
   }
 };
 
+const getOrderForAnalysis = async (req, res, next) => {
+  try {
+    const start = new Date(req.params.date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(req.params.date);
+    end.setHours(23, 59, 59, 999);
+
+    const order = await Order.find({
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    }).sort({ createdAt: "asc" });
+    res.send(order);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUserOrders,
   getOrder,
   createOrder,
   updateOrderToPaid,
   updateOrderToBeDelivered,
-  getOrders
+  getOrders,
+  getOrderForAnalysis,
 };
