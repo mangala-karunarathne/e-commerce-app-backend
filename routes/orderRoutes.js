@@ -2,7 +2,7 @@ const express = require("express")
 const router = express()
 const { verifyIsLoggedIn, verifyIsAdmin } = require("../middleware/verifyAuthToken.js");
 
-const {getUserOrders, getOrder, createOrder, updateOrderToPaid, updateOrderToBeDelivered, getOrders} = require("../controllers/orderController.js")
+const {getUserOrders, getOrder, createOrder, updateOrderToPaid, updateOrderToBeDelivered, getOrders, getOrderForAnalysis} = require("../controllers/orderController.js")
 
 
 // user Routes
@@ -17,5 +17,6 @@ router.put("/paid/:id", updateOrderToPaid)
 router.use(verifyIsAdmin)
 router.put("/delivered/:id", updateOrderToBeDelivered)
 router.get("/admin", getOrders)
+router.get("/analysis/:date", getOrderForAnalysis)
 
 module.exports = router
