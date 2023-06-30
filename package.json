@@ -5,11 +5,16 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "server-prod": "node server.js",
+    "server-dev": "npx nodemon server.js",
+    "client": "npm start --prefix ../e-commerce-app-frontend",
+    "dev": "concurrently --kill-others-on-fail \"npm run server-dev\" \"npm run client\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^8.2.0",
     "nodemon": "^2.0.22"
   },
   "dependencies": {
