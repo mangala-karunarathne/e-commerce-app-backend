@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(fileUpload());
 app.use(cookieParser());
 
-const allowedOrigins = ['http://localhost:3000']; 
+const allowedOrigins = ['http://localhost:3000', 'https://mk-online-shop.onrender.com']; 
 
 const corsOptions = {
   origin: function (origin, callback) {
