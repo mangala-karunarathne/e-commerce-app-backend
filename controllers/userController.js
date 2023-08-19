@@ -95,7 +95,7 @@ const loginUser = async (req, res, next) => {
           ),
           cookieParams
         )
-        .json({// just pass the access_token as response  to as an alternative for access_token isue
+        .json({ // just pass the access_token as response  to as an alternative for access_token isue
           access_token:generateAuthToken(
             user._id,
             user.name,
