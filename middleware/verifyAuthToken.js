@@ -1,14 +1,17 @@
 const jwt = require("jsonwebtoken");
 const verifyIsLoggedIn = (req, res, next) => {
   // next();
-  // return; 
+  // return;
   try {
-        const token = req.headers.authorization;
-        let outputString = token.replace(/"/g, '');
+    const token = req.headers.authorization;
+    console.log("token", token);
+    
     if (!token) {
       return res.status(403).send("A token is required for authentication");
     }
+    let outputString = token.replace(/"/g, "");
 
+    console.log("outputString", outputString);
     try {
       const decoded = jwt.verify(outputString, process.env.JWT_SECRET_KEY);
       req.user = decoded;
@@ -23,7 +26,7 @@ const verifyIsLoggedIn = (req, res, next) => {
 
 const verifyIsAdmin = (req, res, next) => {
   // next();
-  // return 
+  // return
   if (req.user && req.user.isAdmin) {
     next();
   } else {
