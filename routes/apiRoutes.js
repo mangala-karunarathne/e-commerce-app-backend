@@ -8,7 +8,13 @@ const orderRoutes = require("./orderRoutes");
 
 const jwt = require("jsonwebtoken");
 app.get("/logout", (req, res) => {
-    return res.clearCookie("access_token").send("access token cleared");
+    const cookieOptions = {
+        path: '/',
+    };
+    // console.log("Before clearing cookie");
+    res.clearCookie("access_token",cookieOptions, { expires: new Date(0) });
+    // console.log("After clearing cookie");
+    return res.send("access token cleared");
 });
 
 app.use("/products", productRoutes);
