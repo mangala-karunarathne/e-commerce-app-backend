@@ -243,7 +243,7 @@ const updateUser = async (req, res, next) => {
     const user = await User.findById(req.params.id).orFail();
     user.name = req.body.name || user.name;
     user.lastName = req.body.lastName || user.lastName;
-    user.email = req.body.email || user.email;
+    // user.email = req.body.email || user.email;
     user.isAdmin = req.body.isAdmin || user.isAdmin;
 
     await user.save();
