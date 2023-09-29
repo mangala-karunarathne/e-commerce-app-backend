@@ -109,6 +109,13 @@ const loginUser = async (req, res, next) => {
             name: user.name,
             lastName: user.lastName,
             isAdmin: user.isAdmin,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            country: user.country,
+            zipCode: user.zipCode,
+            city: user.city,
+            state: user.state,
             doNotLogout,
           },
         });
@@ -126,12 +133,12 @@ const updateUserProfile = async (req, res, next) => {
     user.name = req.body.name || user.name;
     user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
-    user.phoneNumber = user.phoneNumber;
-    user.address = user.address;
-    user.country = user.country;
-    user.zipCode = user.zipCode;
-    user.city = user.city;
-    user.state = user.state;
+    user.phoneNumber = req.body.phoneNumber;
+    user.address = req.body.address;
+    user.country = req.body.country;
+    user.zipCode = req.body.zipCode;
+    user.city = req.body.city;
+    user.state = req.body.state;
     if (req.body.password !== user.password) {
       user.password = hashPassword(req.body.password);
     }
@@ -144,6 +151,12 @@ const updateUserProfile = async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         isAdmin: user.isAdmin,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+        country: user.country,
+        zipCode: user.zipCode,
+        city: user.city,
+        state: user.state,
       },
     });
   } catch (error) {
