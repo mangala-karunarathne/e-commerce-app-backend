@@ -17,12 +17,12 @@ const registerUser = async (req, res, next) => {
   try {
     const { name, lastName, email, password } = req.body;
     if (!(name && lastName && email && password)) {
-      return res.status(400).send("All inputs are required");
+      return res.status(400).json({ error: "All inputs are required" });
     }
     const hashedPassword = hashPassword(password);
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).send("User already exists");
+      return res.status(400).json({ error: "User already exists" });
     } else {
       const user = await User.create({
         name,
@@ -62,6 +62,7 @@ const registerUser = async (req, res, next) => {
     next(error);
   }
 };
+
 
 const loginUser = async (req, res, next) => {
   try {
